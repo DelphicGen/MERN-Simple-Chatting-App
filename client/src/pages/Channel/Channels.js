@@ -34,8 +34,8 @@ const Channels = () => {
     }, [scrollTop])
 
     return (
-        <div className={`h-screen ${styles.channels}`}>
-            <div ref={channelsContainerRef} className={`h-full ${styles.channels_container}`}>
+        <div className="h-screen fixed top-0 left-0 overflow-visible bg-gray-800">
+            <div ref={channelsContainerRef} className={`px-3 h-full overflow-y-auto ${styles.channels_container}`}>
 
                 <Channel icon="coffee" name="Coffee" index={0} ref={channelRef.current} top={channelOffset[0]} />
                 <Channel icon="cogs" name="Cogs" index={1} ref={channelRef.current} top={channelOffset[1]} />
