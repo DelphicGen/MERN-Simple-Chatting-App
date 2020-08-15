@@ -18,14 +18,20 @@
 
 .channel_modal {
     top: 0;
-    right: -100%;
+    left: 120%;
     background-color: rgba(0, 0, 0, .8);
     text-align: center;
     margin-top: 8px;
+    padding: 5px 10px;
+    display: block;
+    visibility: hidden;
+    max-height: 0;
     color: #fff;
-    transition: 1s all ease-in-out;
+    transition: 8s max-height ease-out, .2s visibility ease-in;
+    width: fit-content;
 }
 
 .link:hover + .channel_modal {
-    /* max-height: 500px; */
+    visibility: visible;
+    max-height: 1000px;
 }
