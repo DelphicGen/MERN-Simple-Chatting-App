@@ -1,0 +1,16 @@
+h1 {
+    width: fit-content;
+}
+
+span {
+    width: max-content;
+    left: 20%;
+    top: -50%;
+    opacity: .1;
+}
+
+@media screen and (min-width: 1024px) {
+    span {
+        font-size: 80px !important;
+    }
+}

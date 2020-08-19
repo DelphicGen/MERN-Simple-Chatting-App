@@ -1,0 +1,26 @@
+.link {
+    border-radius: 50%;
+    transition: .2s all ease-in
+}
+
+.link:hover {
+    border-radius: 30%;
+}
+
+svg {
+    width: 26.656px !important;
+}
+
+.channel_modal {
+    visibility: hidden;
+    left: 120%;
+    font-size: 0;
+    width: fit-content;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, .3);
+    transition: .1s font-size ease-out, .1s visibility ease-in;
+}
+
+.link:hover + .channel_modal {
+    visibility: visible;
+    font-size: 12px;
+}
