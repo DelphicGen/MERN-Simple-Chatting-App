@@ -19,12 +19,15 @@ router.post('/register', checkNotAuthenticated, function(req, res, next) {
             if(records) {
                 res.send('Username is taken')
             } else {
+                if(req.body.password.length === 0) res.send('Password field is required')
                 const hashedPassword = await bcrypt.hash(req.body.password, 10);
                 User.create({username: req.body.username, password: hashedPassword})
-                    .then(function(record) {
-                        res.send(record);
+                    .then((record) => {
+                        res.send("Ok");
                     })
-                    .catch(next);
+                    .catch((err) => {
+                        res.send(err);
+                    });
             }
         })
 });

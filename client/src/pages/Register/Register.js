@@ -31,19 +31,25 @@ const Register = ({setResponse, checkNotAuthenticated}) => {
             headers: {'Content-Type': 'application/json' }
             })
             .then(response => {
-                if(response.data === "Username is taken") {
+                if(response.data === "Username is taken" || response.data === "Password field is required") {
                     setResponse(prevResponse => ({
                         ...prevResponse,
                         message: response.data,
                         type: 'Error'
                     }))
-                } else {
+                } else if(response.data === "Ok") {
                     setResponse(prevResponse => ({
                         ...prevResponse,
                         message: "User successfully registered",
                         type: 'Success'
                     }))
                     history.push('/')
+                } else {
+                    setResponse(prevResponse => ({
+                        ...prevResponse,
+                        message: response.data.message,
+                        type: 'Error'
+                    }))
                 }
             })
     }
@@ -78,8 +84,8 @@ const Register = ({setResponse, checkNotAuthenticated}) => {
             <div className="text-white">
                 <Header text="Register" />
                 <div>
-                    <Input placeholder="Username" type="text" value={form.username} name="username" onChange={handleFormChange} />
-                    <Input placeholder="Password" type="password" value={form.password} name="password" onChange={handleFormChange} />
+                    <Input placeholder="Username" type="text" value={form.username} name="username" onChange={handleFormChange} required={true} />
+                    <Input placeholder="Password" type="password" value={form.password} name="password" onChange={handleFormChange} required={true} />
                     <Button onClick={register} text="Register" />
                 </div>
                 <br />

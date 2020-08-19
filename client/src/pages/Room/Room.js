@@ -19,12 +19,12 @@ function Room({checkAuthenticated}) {
     }, [])
 
     return (
-        <React.Fragment>
+        <div className="flex">
             <Channels />
-            <div>
+            <div className="ml-20 w-full h-screen overflow-auto">
                 
             </div>
-        </React.Fragment>
+        </div>
     )
 }
 

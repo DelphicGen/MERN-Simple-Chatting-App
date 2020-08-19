@@ -66,8 +66,8 @@ function App() {
       <Router>
         <div className="app-container">
           <div className="bg-gray-700 w-full min-h-screen overflow-hidden">
-              <Flash message={response.message} type={response.type} />
               <Modal setResponse={setResponse} showModal={showModal} setShowModal={setShowModal} />
+              <Flash message={response.message} type={response.type} />
               <Switch>
 
                 <Route path="/" exact>

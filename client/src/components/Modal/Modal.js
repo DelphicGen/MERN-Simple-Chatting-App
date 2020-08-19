@@ -1,9 +1,9 @@
 import React, {useState} from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
-import styles from './Modal.module.css'
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import axios from 'axios';
+import {useHistory} from 'react-router-dom';
 
 const backdrop = {
     hidden: {
@@ -29,6 +29,8 @@ const modal = {
 }
 
 const Modal = ({showModal, setShowModal, setResponse}) => {
+
+    const history = useHistory();
 
     const [channel, setChannel] = useState({
         name: '',
@@ -57,7 +59,15 @@ const Modal = ({showModal, setShowModal, setResponse}) => {
             })
             .then(response => {
                 if(response.data === 'Ok') {
+                    setChannel(prevChannel => ({
+                        ...prevChannel,
+                        name: '',
+                        icon: ''
+                    }))
                     setShowModal(false)
+                } else if (response.data === "Not authenticated") {
+                    setShowModal(false)
+                    history.push('/')
                 } else {
                     setResponse(prevResponse => ({
                         ...prevResponse,
@@ -73,7 +83,6 @@ const Modal = ({showModal, setShowModal, setResponse}) => {
             {
                 showModal && (
                     <motion.div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-75 z-10 flex items-center"
-                        // onClick={() => setShowModal(false)}
                         variants={ backdrop }
                         initial="hidden"
                         animate="visible"

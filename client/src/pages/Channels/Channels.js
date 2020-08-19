@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
-import {useHistory} from 'react-router-dom'
+import {useHistory} from 'react-router-dom';
 import styles from './Channels.module.css';
 import Channel from '../../components/Channel/Channel';
 import {modalContext} from '../../App';
@@ -56,9 +56,11 @@ const Channels = () => {
                 headers: {'Content-Type': 'application/json' }
             })
                 .then(response => {
+                    if(response.data === "Not authenticated") {
+                        history.push('/')
+                    }
                     let tempChannels = [...channels]
                     tempChannels = response.data
-
                     setIndex(response.data.length)
                     setChannels(tempChannels)
                 })
