@@ -7,7 +7,7 @@ import Header from '../../components/Header/Header'
 import Button from '../../components/Button/Button'
 import Container1 from '../../components/Container1/Container1'
 
-const Login = ({response, setResponse, checkNotAuthenticated}) => {
+const Login = ({setResponse, checkNotAuthenticated}) => {
     const history = useHistory()
     const [form, setForm] = useState({
         username: '',
@@ -23,6 +23,7 @@ const Login = ({response, setResponse, checkNotAuthenticated}) => {
     }
 
     const login = () => {
+        setResponse('')
         axios({
             method: 'post',
             url: 'http://localhost:3050/api/auth/login',

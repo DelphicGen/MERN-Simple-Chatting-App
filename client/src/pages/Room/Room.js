@@ -21,6 +21,9 @@ function Room({checkAuthenticated}) {
     return (
         <React.Fragment>
             <Channels />
+            <div>
+                
+            </div>
         </React.Fragment>
     )
 }

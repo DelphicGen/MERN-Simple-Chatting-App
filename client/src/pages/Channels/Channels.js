@@ -1,13 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 import {useHistory} from 'react-router-dom'
 import styles from './Channels.module.css';
 import Channel from '../../components/Channel/Channel';
+import {modalContext} from '../../App';
 
 const Channels = () => {
 
-    const history = useHistory()
+    const history = useHistory();
+    const ModalContext = useContext(modalContext)
     const [channels, setChannels] = useState([]);
     const [index, setIndex] = useState(0);
     const [channelOffset, setChannelOffset] = useState([]);
@@ -17,6 +19,10 @@ const Channels = () => {
     
     const onScroll = (e) => {
         setScrollTop(e.target.scrollTop);
+    }
+
+    const addChannel = () => {
+        ModalContext.setShowModal(true)
     }
 
     const logout = () => {
@@ -37,20 +43,27 @@ const Channels = () => {
         let tempRef = channelsContainerRef.current
         tempRef.addEventListener('scroll', onScroll);
 
-        axios({
-            method: 'get',
-            url: 'http://localhost:3050/api/channel/list',
-            withCredentials: true,
-            headers: {'Content-Type': 'application/json' }
-        })
-            .then(response => {
-                setIndex(response.data.length)
-                console.log(response)
-            })
-
         return () => tempRef.removeEventListener('scroll', onScroll);
 
     }, [])
+
+    useEffect(() => {
+        if(!ModalContext.showModal) {
+            axios({
+                method: 'get',
+                url: 'http://localhost:3050/api/channel/list',
+                withCredentials: true,
+                headers: {'Content-Type': 'application/json' }
+            })
+                .then(response => {
+                    let tempChannels = [...channels]
+                    tempChannels = response.data
+
+                    setIndex(response.data.length)
+                    setChannels(tempChannels)
+                })
+        }
+    }, [ModalContext.showModal])
 
     useEffect(() => {
         let tempOffset = []
@@ -60,19 +73,19 @@ const Channels = () => {
 
         setChannelOffset(tempOffset);
 
-    }, [scrollTop])
+    }, [scrollTop, channels])
 
     return (
         <div className="h-screen fixed top-0 left-0 overflow-visible bg-gray-800">
             <div ref={channelsContainerRef} style={{height: 'calc(100vh - 48px)'}} className={`px-3 overflow-y-auto ${styles.channels_container}`}>
 
                 {
-                    channels.forEach((channel, index) => {
-                        return <Channel icon={channel.icon} name={channel.name} index={index} ref={channelRef.current} top={channelOffset[0]} to="/room" />
+                    channels.map((channel, index) => {
+                        return <Channel key={channel._id} icon={channel.icon} name={channel.name} index={index} ref={channelRef.current} top={channelOffset[index]} to="/room" />
                     })
                 }
 
-                <Channel icon="plus" name="New Channel" index={index} ref={channelRef.current} top={channelOffset[index]} />
+                <Channel icon="plus" name="New Channel" index={index} ref={channelRef.current} top={channelOffset[index]} onClick={addChannel} />
 
             </div>
 

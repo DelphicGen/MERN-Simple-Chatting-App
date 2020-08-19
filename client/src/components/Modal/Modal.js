@@ -1,5 +1,9 @@
-import React from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import React, {useState} from 'react'
+import { motion, AnimatePresence } from 'framer-motion';
+import styles from './Modal.module.css'
+import Input from '../Input/Input';
+import Button from '../Button/Button';
+import axios from 'axios';
 
 const backdrop = {
     hidden: {
@@ -24,12 +28,72 @@ const modal = {
     }
 }
 
-const Modal = ({showModal}) => {
+const Modal = ({showModal, setShowModal, setResponse}) => {
+
+    const [channel, setChannel] = useState({
+        name: '',
+        icon: ''
+    })
+
+    const handleFormChange = (e) => {
+        let {name, value} = e.target
+        setChannel((prevChannel) => ({
+            ...prevChannel,
+            [name]: value
+        }))
+    }
+
+    const handleCancel = () => {
+        setShowModal(false)
+    }
+
+    const handleConfirm = () => {
+        axios({
+            method: 'post',
+            url: 'http://localhost:3050/api/channel/add',
+            data: channel,
+            withCredentials: true,
+            headers: {'Content-Type': 'application/json' }
+            })
+            .then(response => {
+                if(response.data === 'Ok') {
+                    setShowModal(false)
+                } else {
+                    setResponse(prevResponse => ({
+                        ...prevResponse,
+                        message: response.data.message,
+                        type: 'Error'
+                    }))
+                }
+            })
+    }
+
     return (
         <AnimatePresence exitBeforeEnter>
             {
                 showModal && (
+                    <motion.div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-75 z-10 flex items-center"
+                        // onClick={() => setShowModal(false)}
+                        variants={ backdrop }
+                        initial="hidden"
+                        animate="visible"
+                        exit="hidden"
+                    >
+                        <motion.div className="w-10/12 sm:w-1/2 md:w-5/12 lg:w-1/3 mx-auto px-5 py-10 bg-blue-700 text-white rounded-md text-center"
+                            variants={ modal }
+                        >
+                            <h1 className="mx-auto relative font-bold text-2xl sm:text-3xl md:text-4xl">New Channel</h1>
+                            <Input placeholder="Channel's Name" type="text" value={channel.name} name="name" onChange={handleFormChange} />
+                            <Input placeholder="Channel's Icon" type="text" value={channel.icon} name="icon" onChange={handleFormChange} />
 
+                            <div className="flex">
+                                <Button onClick={handleConfirm} text="Confirm" />
+                                <Button onClick={handleCancel} text="Cancel" secondary={true} />
+                            </div>
+
+                        </motion.div>
+
+                    </motion.div>
                 )
             }
         </AnimatePresence>

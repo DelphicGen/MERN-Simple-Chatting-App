@@ -3,17 +3,17 @@ import styles from './Channel.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {Link} from 'react-router-dom';
 
-const Channel = React.forwardRef(({icon, name, index, top, to}, ref) => {
+const Channel = React.forwardRef(({icon, name, index, top, to, onClick}, ref) => {
 
     return (
         <div ref={el => ref[index] = el} className="my-5">
             {
                 to ? (
-                    <Link className={`block p-3 text-center text-white bg-gray-600 ${styles.link}`} to={to}>
+                    <Link onClick={onClick && onClick} className={`block p-3 text-center text-white bg-gray-600 ${styles.link}`} to={to}>
                         <FontAwesomeIcon icon={['fas', icon]} size="lg" />
                     </Link>
                 ) : (
-                    <div className={`block p-3 text-center text-white bg-gray-600 ${styles.link}`} to={to}>
+                    <div onClick={onClick && onClick} className={`block p-3 text-center text-white bg-gray-600 ${styles.link}`} to={to}>
                         <FontAwesomeIcon icon={['fas', icon]} size="lg" />
                     </div>
                 )

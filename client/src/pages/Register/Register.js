@@ -6,7 +6,7 @@ import Header from '../../components/Header/Header'
 import Button from '../../components/Button/Button'
 import Container1 from '../../components/Container1/Container1'
 
-const Register = ({response, setResponse, checkNotAuthenticated}) => {
+const Register = ({setResponse, checkNotAuthenticated}) => {
     
     const history = useHistory();
     const [form, setForm] = useState({
@@ -61,17 +61,17 @@ const Register = ({response, setResponse, checkNotAuthenticated}) => {
         return () => { didCancel = true }
     }, [])
 
-    useEffect(() => {
-        let timer
-        if(response) {
-            timer = setTimeout(function() {
-                setResponse('')
-            }, 6000)
-        }
-        return () => {
-            clearTimeout(timer)
-        }
-    }, [response])
+    // useEffect(() => {
+    //     let timer
+    //     if(response) {
+    //         timer = setTimeout(function() {
+    //             setResponse('')
+    //         }, 6000)
+    //     }
+    //     return () => {
+    //         clearTimeout(timer)
+    //     }
+    // }, [response])
 
     return (
         <Container1>

@@ -12,6 +12,7 @@ import Flash from './components/Flash/Flash';
 import Modal from './components/Modal/Modal';
 
 library.add(fas)
+export const modalContext = React.createContext()
 
 function App() {
   
@@ -56,18 +57,24 @@ function App() {
 
 
   return (
-    <Router>
+    <modalContext.Provider value={
+      {
+        showModal,
+        setShowModal
+      }
+    }>
+      <Router>
         <div className="app-container">
           <div className="bg-gray-700 w-full min-h-screen overflow-hidden">
               <Flash message={response.message} type={response.type} />
-              <Modal showModal={showModal} />
+              <Modal setResponse={setResponse} showModal={showModal} setShowModal={setShowModal} />
               <Switch>
 
                 <Route path="/" exact>
-                  <Login response={response} setResponse={setResponse} checkNotAuthenticated={checkNotAuthenticated} />
+                  <Login setResponse={setResponse} checkNotAuthenticated={checkNotAuthenticated} />
                 </Route>
                 <Route path="/register">
-                  <Register response={response} setResponse={setResponse} checkNotAuthenticated={checkNotAuthenticated} />
+                  <Register setResponse={setResponse} checkNotAuthenticated={checkNotAuthenticated} />
                 </Route>
                 <Route path="/room">
                   <Room checkAuthenticated={checkAuthenticated} />
@@ -79,6 +86,7 @@ function App() {
 
         </div>
       </Router>
+    </modalContext.Provider>
   );
 }
 
