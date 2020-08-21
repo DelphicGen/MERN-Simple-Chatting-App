@@ -10,16 +10,15 @@ router.get('/list', checkAuthenticated, function(req, res, next) {
             .then(data => {
                 UserChannel.find({username: data.username})
                     .then((records) => {
-                        let channels = []
-                        records.forEach((record, index) => {
-                            Channel.find({_id: record.channel_id})
+                        return Promise.all(records.map(record => {
+                            return Channel.find({_id: record.channel_id})
                                 .then((channel) => {
-                                    channels.push(channel[0])
-                                    if(index === records.length-1) {
-                                        res.send(channels)
-                                    }
+                                    return channel[0]
                                 })
-                        })
+                        }))
+                    })
+                    .then(results => {
+                        res.send(results)
                     })
                     .catch((err) => {
                         res.send(err)

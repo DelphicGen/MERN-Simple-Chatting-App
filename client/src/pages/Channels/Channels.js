@@ -48,6 +48,7 @@ const Channels = () => {
     }, [])
 
     useEffect(() => {
+        let didCancel = false;
         if(!ModalContext.showModal) {
             axios({
                 method: 'get',
@@ -56,25 +57,30 @@ const Channels = () => {
                 headers: {'Content-Type': 'application/json' }
             })
                 .then(response => {
-                    if(response.data === "Not authenticated") {
+                    if(response.data === "Not authenticated" && !didCancel) {
                         history.push('/')
                     }
-                    let tempChannels = [...channels]
-                    tempChannels = response.data
-                    setIndex(response.data.length)
-                    setChannels(tempChannels)
+
+                    if(!didCancel) {
+                        let tempChannels = [...channels]
+                        tempChannels = response.data    
+                        setIndex(response.data.length)
+                        setChannels(tempChannels)
+                    }
                 })
         }
+        return () => { didCancel = true }
     }, [ModalContext.showModal])
 
     useEffect(() => {
-        let tempOffset = []
+        let didCancel = false;
+        let tempOffset = [];
         channelRef.current.forEach(ref=> {
             tempOffset.push(ref.getBoundingClientRect().top)
         })
 
-        setChannelOffset(tempOffset);
-
+        if(!didCancel) setChannelOffset(tempOffset);
+        return () => {didCancel = true}
     }, [scrollTop, channels])
 
     return (

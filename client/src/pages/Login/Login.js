@@ -30,10 +30,19 @@ const Login = ({setResponse, checkNotAuthenticated}) => {
             data: form,
             withCredentials: true,
             headers: {'Content-Type': 'application/json' }
-            })
+        })
             .then(response => {
                 if(response.data.message === 'Ok') {
-                    history.push('/room')
+                    localStorage.setItem('channel_id', response.data.room.channel_id);
+                    localStorage.setItem('username', response.data.room.username);
+                    // history.push(`/room?channel=${response.data.room.channel_id}&username=${response.data.room.username}`)
+                    // history.push(`/room/${response.data.room.channel_id}/${response.data.room.username}`)
+                    history.push({
+                        pathname: '/room',
+                        search: `?channel=${response.data.room.channel_id}&username=${response.data.room.username}`,
+                        state: { detail: response.data }
+                    })
+                    // history.push('/room')
                 } else {
                     setResponse(prevResponse => ({
                         ...prevResponse,

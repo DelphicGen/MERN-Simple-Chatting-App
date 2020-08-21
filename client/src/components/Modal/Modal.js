@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
@@ -31,7 +31,6 @@ const modal = {
 const Modal = ({showModal, setShowModal, setResponse}) => {
 
     const history = useHistory();
-
     const [channel, setChannel] = useState({
         name: '',
         icon: ''
@@ -57,7 +56,7 @@ const Modal = ({showModal, setShowModal, setResponse}) => {
             withCredentials: true,
             headers: {'Content-Type': 'application/json' }
             })
-            .then(response => {
+            .then(async (response) => {
                 if(response.data === 'Ok') {
                     setChannel(prevChannel => ({
                         ...prevChannel,
@@ -96,6 +95,7 @@ const Modal = ({showModal, setShowModal, setResponse}) => {
                             <Input placeholder="Channel's Icon" type="text" value={channel.icon} name="icon" onChange={handleFormChange} />
 
                             <div className="flex">
+                                {/* <Button onClick={() => setIsClicked(true)} text="Confirm" /> */}
                                 <Button onClick={handleConfirm} text="Confirm" />
                                 <Button onClick={handleCancel} text="Cancel" secondary={true} />
                             </div>
