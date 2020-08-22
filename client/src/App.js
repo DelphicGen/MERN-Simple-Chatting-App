@@ -76,7 +76,7 @@ function App() {
                 <Route path="/register">
                   <Register setResponse={setResponse} checkNotAuthenticated={checkNotAuthenticated} />
                 </Route>
-                <Route path="/room">
+                <Route path="/channel">
                   <Room checkAuthenticated={checkAuthenticated} />
                 </Route>
                 <Route path="*" component={NotFoundPage} />

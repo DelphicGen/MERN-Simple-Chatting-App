@@ -39,18 +39,19 @@ router.post('/add', checkAuthenticated, function(req, res, next) {
 })
 
 router.get('/message', checkAuthenticated, function(req, res, next) {
-    Channel.find({_id: req.query.room})
+    Channel.find({_id: req.query.channel})
         .then(channel => {
-            res.send(channel[0].chat)
+            if(channel[0].chat) res.send(channel[0].chat)
+            else res.send([])
         })
 })
 
 router.post('/message', checkAuthenticated, function(req, res, next) {
-    Channel.findOne({_id: req.query.room})
+    Channel.findOne({_id: req.query.channel})
         .then(channel => {
             let listOfChat = [...channel.chat]
             listOfChat.push(req.body)
-            Channel.findOneAndUpdate({_id: req.query.room}, {chat: listOfChat})
+            Channel.findOneAndUpdate({_id: req.query.channel}, {chat: listOfChat})
                 .then(record => {
                     res.send('Ok')
                 })

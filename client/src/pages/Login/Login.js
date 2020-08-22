@@ -33,13 +33,10 @@ const Login = ({setResponse, checkNotAuthenticated}) => {
         })
             .then(response => {
                 if(response.data.message === 'Ok') {
-                    localStorage.setItem('channel_id', response.data.user.channel_id[0]);
-                    localStorage.setItem('username', response.data.user.username);
                     history.push({
-                        pathname: '/room',
-                        search: `?room=${response.data.user.channel_id[0]}&name=${response.data.user.username}`
+                        pathname: '/channel',
+                        search: `?channel=${response.data.user.channel_id[0]}&username=${response.data.user.username}`
                     })
-                    // history.push('/room')
                 } else {
                     setResponse(prevResponse => ({
                         ...prevResponse,
@@ -55,7 +52,7 @@ const Login = ({setResponse, checkNotAuthenticated}) => {
         const fetchCheckNotAuthenticatedAPI = async () => {
             const response = await checkNotAuthenticated();
             if(!didCancel) {
-                if(response.data !== 'Ok') history.push('/room')
+                if(response.data !== 'Ok') history.push('/channel')
             }
         }
 

@@ -59,7 +59,7 @@ const Register = ({setResponse, checkNotAuthenticated}) => {
         const fetchCheckNotAuthenticatedAPI = async () => {
             const response = await checkNotAuthenticated();
             if(!didCancel) {
-                if(response.data !== 'Ok') history.push('/room')
+                if(response.data !== 'Ok') history.push('/channel')
             }
         }
 

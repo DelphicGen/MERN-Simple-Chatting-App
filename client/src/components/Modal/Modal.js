@@ -81,7 +81,7 @@ const Modal = ({showModal, setShowModal, setResponse}) => {
         <AnimatePresence exitBeforeEnter>
             {
                 showModal && (
-                    <motion.div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-75 z-10 flex items-center"
+                    <motion.div className="fixed z-20 top-0 left-0 w-full h-full bg-gray-900 bg-opacity-75 z-10 flex items-center"
                         variants={ backdrop }
                         initial="hidden"
                         animate="visible"

@@ -8,7 +8,7 @@ import Channel from '../../components/Channel/Channel';
 import {modalContext} from '../../App';
 let socket;
 
-const Channels = ({name, disconnect}) => {
+const Channels = ({username, disconnect}) => {
 
     const history = useHistory();
     const ModalContext = useContext(modalContext)
@@ -95,7 +95,7 @@ const Channels = ({name, disconnect}) => {
 
                 {
                     channels.map((channel, index) => {
-                        return <Channel key={channel._id} icon={channel.icon} name={channel.name} index={index} ref={channelRef.current} top={channelOffset[index]} to={`/room?room=${channel._id}&name=${name}`} />
+                        return <Channel key={channel._id} icon={channel.icon} name={channel.name} index={index} ref={channelRef.current} top={channelOffset[index]} to={`/channel?channel=${channel._id}&username=${username}`} />
                     })
                 }
 

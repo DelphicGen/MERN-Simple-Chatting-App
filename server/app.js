@@ -40,15 +40,15 @@ initializePassport(passport, (username) => {
 // Socket.io
 io.on('connection', (socket) => {
 
-    socket.on('join', ({name, room}, callback) => {
-        const {error, user, id} = addUser({id: socket.id, name, room});
+    socket.on('join', ({username, channel}, callback) => {
+        const {error, user, id} = addUser({id: socket.id, username, channel});
         if(error) {
             socket.id = id
             return callback(error)
         }
         else {
 
-            socket.join(user.room);
+            socket.join(user.channel);
 
             callback();
         }
@@ -57,7 +57,7 @@ io.on('connection', (socket) => {
 
     socket.on('sendMessage', (message, callback) => {
         const user = getUser(socket.id);
-        io.to(user.room).emit('message', {user: user.name, text: message});
+        io.to(user.channel).emit('message', {username: user.username, message: message});
         callback();
     });
 

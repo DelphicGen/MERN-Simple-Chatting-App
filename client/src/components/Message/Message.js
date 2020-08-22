@@ -1,11 +1,12 @@
 import React from 'react';
 
-const Message = ({message: {username, message}, name}) => {
+const Message = ({data, username}) => {
     let isSentByCurrentUser = false;
+    let message = data.message
+    let sender = data.username
+    const trimmedName = sender.trim();
 
-    const trimmedName = username.trim();
-
-    if(name === trimmedName){
+    if(username === trimmedName){
         isSentByCurrentUser = true;
     }
 

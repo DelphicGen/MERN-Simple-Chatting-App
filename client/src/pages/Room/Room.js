@@ -14,36 +14,33 @@ function Room({checkAuthenticated}) {
 
     const history = useHistory();
     const location = useLocation();
-    const [name, setName] = useState('');
-    const [room, setRoom] = useState('');
+    const [username, setUsername] = useState('');
+    const [channel, setChannel] = useState('');
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
 
     const ENDPOINT = 'localhost:3050'
 
     useEffect(() => {
-        const {room, name} = queryString.parse(location.search);
+        const {channel, username} = queryString.parse(location.search);
 
         socket = io(ENDPOINT);
 
-        setName(name);
-        setRoom(room);
+        setUsername(username);
+        setChannel(channel);
 
-        socket.emit('join', {name, room}, (error) => {
+        socket.emit('join', {username, channel}, (error) => {
             if(error) console.log(error)
-        });
-        socket.on('message', (message) => {
-            setMessages([...messages, message]);
         });
 
         axios({
             method: 'get',
-            url: `http://localhost:3050/api/channel/message?room=${room}`,
+            url: `http://localhost:3050/api/channel/message?channel=${channel}`,
             withCredentials: true,
             headers: {'Content-Type': 'application/json' }
         })
             .then(response => {
-                setMessages([...messages, ...response.data])
+                setMessages([...response.data])
             })
 
         return (
@@ -54,14 +51,20 @@ function Room({checkAuthenticated}) {
         )
     }, [ENDPOINT, location.search]);
 
+    useEffect(() => {
+        socket.on('message', (message) => {
+            setMessages([...messages, message]);
+        });
+    }, [messages])
+
     const sendMessage = (e) => {
         e.preventDefault();
         
         if(message){
             axios({
                 method: 'post',
-                url: `http://localhost:3050/api/channel/message?room=${room}`,
-                data: {message: message, username: name},
+                url: `http://localhost:3050/api/channel/message?channel=${channel}`,
+                data: {message: message, username: username},
                 withCredentials: true,
                 headers: {'Content-Type': 'application/json' }
             })
@@ -94,9 +97,9 @@ function Room({checkAuthenticated}) {
 
     return (
         <div className="flex">
-            <Channels name={name} disconnect={disconnect} />
+            <Channels username={username} disconnect={disconnect} />
             <div style={{marginLeft: '74.641px'}} className="flex flex-col w-full h-screen overflow-auto">
-                <Messages messages={messages} name={name} />
+                <Messages messages={messages} username={username} />
 
                 <Input2 message={message} setMessage={setMessage} sendMessage={sendMessage} />
             </div>
