@@ -15,7 +15,6 @@ const server = http.createServer(app);
 const io = socketio(server);
 const authRoutes = require("./routes/authRoutes");
 const channelRoutes = require('./routes/channelRoutes');
-const chatRoutes = require('./routes/chatRoutes');
 const User = require('./models/user');
 const {addUser, removeUser, getUser, getUserInRoom} = require('./users');
 
@@ -25,6 +24,7 @@ mongoose.connect('mongodb://localhost/chatapp',
     console.log("Mongoose Is Connected");
 });
 mongoose.Promise = global.Promise;
+mongoose.set('useFindAndModify', false);
 
 // Passport
 initializePassport(passport, (username) => {
@@ -41,33 +41,28 @@ initializePassport(passport, (username) => {
 io.on('connection', (socket) => {
 
     socket.on('join', ({name, room}, callback) => {
-        const {error, user} = addUser({id: socket.id, name, room});
+        const {error, user, id} = addUser({id: socket.id, name, room});
+        if(error) {
+            socket.id = id
+            return callback(error)
+        }
+        else {
 
-        if(error) return callback(error);
+            socket.join(user.room);
 
-        socket.emit('message', {user: 'admin', text: `Welcome ${user.name}`});
-
-        socket.broadcast.to(user.room).emit('message', {user: 'admin', text: `${user.name} has joined!`});
-
-        // Join a user in a room
-        socket.join(user.room);
-
-        callback();
+            callback();
+        }
 
     });
 
     socket.on('sendMessage', (message, callback) => {
         const user = getUser(socket.id);
-        console.log(user)
         io.to(user.room).emit('message', {user: user.name, text: message});
         callback();
     });
 
     socket.on('disconnect', () => {
         const user = removeUser(socket.id);
-        if(user){
-            io.to(user.room).emit('message', {user: 'admin', text: `User ${user.name} has left`})
-        }
     });
 
 });
@@ -92,7 +87,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api/auth', authRoutes);
 app.use('/api/channel', channelRoutes);
-app.use('/api/chat', chatRoutes);
 app.use(function(err, req, res, next) {
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};

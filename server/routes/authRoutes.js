@@ -3,7 +3,6 @@ const passport = require('passport');
 const router = express.Router();
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
-const UserChannel = require('../models/users_channels');
 const [checkAuthenticated, checkNotAuthenticated] = require('../functions/functions');
 
 router.get('/checknotauthenticated', checkNotAuthenticated, function(req, res, next) {
@@ -42,13 +41,7 @@ router.post('/login', checkNotAuthenticated,function(req, res, next) {
         }
         req.login(user, function(err) {
             if (err) { return next(err); }
-            UserChannel.find({username: user.username})
-                    .then((records) => {
-                        return res.send({message: info.message, room: records[0]})
-                    })
-                    .catch((err) => {
-                        res.send(err)
-                    });
+            res.send({message: info.message, user: user})
         });
       })(req, res, next);
 });

@@ -4,14 +4,16 @@ import Channels from '../Channels/Channels';
 import io from 'socket.io-client';
 import Messages from '../../components/Messages/Messages';
 import Input2 from '../../components/Input2/Input2';
-import './Room.module.css'
+import './Room.module.css';
+import { useLocation } from 'react-router-dom';
 import queryString from 'query-string';
+import axios from 'axios';
 let socket;
 
-function Room({checkAuthenticated, location}, props) {
+function Room({checkAuthenticated}) {
 
     const history = useHistory();
-    // Use to store the value of name and room inputed by user
+    const location = useLocation();
     const [name, setName] = useState('');
     const [room, setRoom] = useState('');
     const [message, setMessage] = useState('');
@@ -20,21 +22,29 @@ function Room({checkAuthenticated, location}, props) {
     const ENDPOINT = 'localhost:3050'
 
     useEffect(() => {
-        // const {channel, username} = queryString.parse(location.search);
-        console.log(props)
-        let room = localStorage.getItem('channel_id');
-        let name = localStorage.getItem('username');
+        const {room, name} = queryString.parse(location.search);
 
         socket = io(ENDPOINT);
-
-        console.log(name)
 
         setName(name);
         setRoom(room);
 
-        socket.emit('join', {name, room}, () => {
-            
+        socket.emit('join', {name, room}, (error) => {
+            if(error) console.log(error)
         });
+        socket.on('message', (message) => {
+            setMessages([...messages, message]);
+        });
+
+        axios({
+            method: 'get',
+            url: `http://localhost:3050/api/channel/message?room=${room}`,
+            withCredentials: true,
+            headers: {'Content-Type': 'application/json' }
+        })
+            .then(response => {
+                setMessages([...messages, ...response.data])
+            })
 
         return (
             () => {
@@ -42,22 +52,31 @@ function Room({checkAuthenticated, location}, props) {
                 socket.off();
             }
         )
-    }, [ENDPOINT]);
+    }, [ENDPOINT, location.search]);
 
-    useEffect(() => {
-        socket.on('message', (message) => {
-            setMessages([...messages, message]);
-        })
-    }, [messages]);
-
-    // function for sending messages
     const sendMessage = (e) => {
         e.preventDefault();
+        
         if(message){
-            socket.emit('sendMessage', message, () => {
-                setMessage('');
+            axios({
+                method: 'post',
+                url: `http://localhost:3050/api/channel/message?room=${room}`,
+                data: {message: message, username: name},
+                withCredentials: true,
+                headers: {'Content-Type': 'application/json' }
             })
+                .then(response => {
+                    if(response.data === 'Ok') {     
+                        socket.emit('sendMessage', message, () => {
+                            setMessage('');
+                        })
+                    }
+                })
         }
+    }
+
+    const disconnect = () => {
+        socket.close()
     }
 
     useEffect(() => {
@@ -66,9 +85,6 @@ function Room({checkAuthenticated, location}, props) {
             const response = await checkAuthenticated();
             if(!didCancel) {
                 if(response.data !== 'Ok') history.push('/');
-                else {
-
-                }
             }
         }
 
@@ -78,7 +94,7 @@ function Room({checkAuthenticated, location}, props) {
 
     return (
         <div className="flex">
-            <Channels />
+            <Channels name={name} disconnect={disconnect} />
             <div style={{marginLeft: '74.641px'}} className="flex flex-col w-full h-screen overflow-auto">
                 <Messages messages={messages} name={name} />
 

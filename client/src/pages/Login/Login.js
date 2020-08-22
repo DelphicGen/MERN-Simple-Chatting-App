@@ -33,14 +33,11 @@ const Login = ({setResponse, checkNotAuthenticated}) => {
         })
             .then(response => {
                 if(response.data.message === 'Ok') {
-                    localStorage.setItem('channel_id', response.data.room.channel_id);
-                    localStorage.setItem('username', response.data.room.username);
-                    // history.push(`/room?channel=${response.data.room.channel_id}&username=${response.data.room.username}`)
-                    // history.push(`/room/${response.data.room.channel_id}/${response.data.room.username}`)
+                    localStorage.setItem('channel_id', response.data.user.channel_id[0]);
+                    localStorage.setItem('username', response.data.user.username);
                     history.push({
                         pathname: '/room',
-                        search: `?channel=${response.data.room.channel_id}&username=${response.data.room.username}`,
-                        state: { detail: response.data }
+                        search: `?room=${response.data.user.channel_id[0]}&name=${response.data.user.username}`
                     })
                     // history.push('/room')
                 } else {

@@ -10,6 +10,10 @@ const ChannelSchema = new Schema({
         type: String,
         default: "comments"
     },
+    chat: [{
+        message: 'String',
+        username: 'String'
+    }]
 });
 
 const Channel = mongoose.model('channel', ChannelSchema);

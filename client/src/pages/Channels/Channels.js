@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 import {useHistory} from 'react-router-dom';
+import io from 'socket.io-client';
 import styles from './Channels.module.css';
 import Channel from '../../components/Channel/Channel';
 import {modalContext} from '../../App';
+let socket;
 
-const Channels = () => {
+const Channels = ({name, disconnect}) => {
 
     const history = useHistory();
     const ModalContext = useContext(modalContext)
@@ -16,6 +18,7 @@ const Channels = () => {
     const [scrollTop, setScrollTop] = useState(0);
     const channelRef = useRef([]);
     const channelsContainerRef = useRef(null);
+    const ENDPOINT = 'localhost:3050'
     
     const onScroll = (e) => {
         setScrollTop(e.target.scrollTop);
@@ -34,6 +37,7 @@ const Channels = () => {
         })
             .then(response => {
                 if(response.data === 'Ok') {
+                    disconnect()
                     history.push('/')
                 }
             })
@@ -42,6 +46,8 @@ const Channels = () => {
     useEffect(() => {
         let tempRef = channelsContainerRef.current
         tempRef.addEventListener('scroll', onScroll);
+
+        socket = io(ENDPOINT);
 
         return () => tempRef.removeEventListener('scroll', onScroll);
 
@@ -84,12 +90,12 @@ const Channels = () => {
     }, [scrollTop, channels])
 
     return (
-        <div className="h-screen fixed top-0 left-0 overflow-visible bg-gray-800">
+        <div className="h-screen fixed top-0 z-10 left-0 overflow-visible bg-gray-800">
             <div ref={channelsContainerRef} style={{height: 'calc(100vh - 48px)'}} className={`px-3 overflow-y-auto ${styles.channels_container}`}>
 
                 {
                     channels.map((channel, index) => {
-                        return <Channel key={channel._id} icon={channel.icon} name={channel.name} index={index} ref={channelRef.current} top={channelOffset[index]} to="/room" />
+                        return <Channel key={channel._id} icon={channel.icon} name={channel.name} index={index} ref={channelRef.current} top={channelOffset[index]} to={`/room?room=${channel._id}&name=${name}`} />
                     })
                 }
 

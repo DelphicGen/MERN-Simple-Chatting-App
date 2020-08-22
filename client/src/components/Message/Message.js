@@ -1,9 +1,9 @@
 import React from 'react';
 
-const Message = ({message: {user, text}, name}) => {
+const Message = ({message: {username, message}, name}) => {
     let isSentByCurrentUser = false;
 
-    const trimmedName = user.trim();
+    const trimmedName = username.trim();
 
     if(name === trimmedName){
         isSentByCurrentUser = true;
@@ -14,7 +14,7 @@ const Message = ({message: {user, text}, name}) => {
             ? (
                 <div className="flex justify-end px-3 sm:px-5 mt-2">
                     <div style={{maxWidth: '80%'}} className="rounded-md px-3 sm:px-5 py-1 text-white inline-block bg-blue-600">
-                        <p className="w-full float-left text-white break-words">{text}</p>
+                        <p className="w-full float-left text-white break-words">{message}</p>
                     </div>
                     <p className="flex items-center text-white tracking-wide pl-1 sm:pl-3">{trimmedName}</p>
                 </div>
@@ -23,7 +23,7 @@ const Message = ({message: {user, text}, name}) => {
                 <div className="flex justify-start px-3 sm:px-5 mt-2">
                     <p className="flex items-center text-white tracking-wide pr-1 sm:pr-3">{trimmedName}</p>
                     <div style={{maxWidth: '80%'}} className="rounded-md px-3 sm:px-5 py-1 text-white inline-block bg-gray-200">
-                        <p className="w-full float-left text-black break-words">{text}</p>
+                        <p className="w-full float-left text-black break-words">{message}</p>
                     </div>
                 </div>
             )
