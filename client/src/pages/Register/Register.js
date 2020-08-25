@@ -5,13 +5,12 @@ import Input from '../../components/Input/Input'
 import Header from '../../components/Header/Header'
 import Button from '../../components/Button/Button'
 import Container1 from '../../components/Container1/Container1'
-import { useSelector, useDispatch } from 'react-redux'
-import { success, error } from '../../actions/action'
+import { useDispatch } from 'react-redux';
+import { success, error } from '../../actions/action';
 
-const Register = ({setResponse, checkNotAuthenticated}, props) => {
+const Register = ({checkNotAuthenticated}) => {
     
     const history = useHistory();
-    // const alert = useSelector(state => state);
     const dispatch = useDispatch();
     const [form, setForm] = useState({
         username: '',

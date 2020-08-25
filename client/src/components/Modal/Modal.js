@@ -1,9 +1,11 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import axios from 'axios';
 import {useHistory} from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { error } from '../../actions/action';
 
 const backdrop = {
     hidden: {
@@ -28,9 +30,10 @@ const modal = {
     }
 }
 
-const Modal = ({showModal, setShowModal, setResponse}) => {
+const Modal = ({showModal, setShowModal}) => {
 
     const history = useHistory();
+    const dispatch = useDispatch();
     const [channel, setChannel] = useState({
         name: '',
         icon: ''
@@ -68,11 +71,7 @@ const Modal = ({showModal, setShowModal, setResponse}) => {
                     setShowModal(false)
                     history.push('/')
                 } else {
-                    setResponse(prevResponse => ({
-                        ...prevResponse,
-                        message: response.data.message,
-                        type: 'Error'
-                    }))
+                    dispatch(error(response.data.message))
                 }
             })
     }

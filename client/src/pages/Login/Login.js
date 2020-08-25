@@ -1,14 +1,17 @@
-import React, {useState, useEffect} from 'react'
-import axios from 'axios'
-import {useHistory} from 'react-router-dom'
+import React, {useState, useEffect} from 'react';
+import axios from 'axios';
+import {useHistory} from 'react-router-dom';
 
-import Input from '../../components/Input/Input'
-import Header from '../../components/Header/Header'
-import Button from '../../components/Button/Button'
-import Container1 from '../../components/Container1/Container1'
+import Input from '../../components/Input/Input';
+import Header from '../../components/Header/Header';
+import Button from '../../components/Button/Button';
+import Container1 from '../../components/Container1/Container1';
+import { useDispatch } from 'react-redux';
+import { error } from '../../actions/action';
 
-const Login = ({setResponse, checkNotAuthenticated}) => {
-    const history = useHistory()
+const Login = ({checkNotAuthenticated}) => {
+    const history = useHistory();
+    const dispatch = useDispatch();
     const [form, setForm] = useState({
         username: '',
         password: ''
@@ -23,7 +26,7 @@ const Login = ({setResponse, checkNotAuthenticated}) => {
     }
 
     const login = () => {
-        setResponse('')
+        dispatch({type: '', message: ''});
         axios({
             method: 'post',
             url: 'http://localhost:3050/api/auth/login',
@@ -38,11 +41,7 @@ const Login = ({setResponse, checkNotAuthenticated}) => {
                         search: `?channel=${response.data.user.channel_id[0]}&username=${response.data.user.username}`
                     })
                 } else {
-                    setResponse(prevResponse => ({
-                        ...prevResponse,
-                        message: response.data.message,
-                        type: 'Error'
-                    }))
+                    dispatch(error(response.data.message))
                 }
             })
     }

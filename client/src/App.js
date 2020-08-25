@@ -18,11 +18,6 @@ library.add(fas)
 export const modalContext = React.createContext()
 
 function App() {
-  
-  const [response, setResponse] = useState({
-    message: '',
-    type: ''
-  });
 
   const {alert: {message, type}} = useSelector(state => state);
   const dispatch = useDispatch();
@@ -72,15 +67,15 @@ function App() {
         <Router>
           <div className="app-container">
             <div className="bg-gray-700 w-full min-h-screen overflow-hidden">
-                <Modal setResponse={setResponse} showModal={showModal} setShowModal={setShowModal} />
+                <Modal showModal={showModal} setShowModal={setShowModal} />
                 <Flash message={message} type={type} />
                 <Switch>
 
                   <Route path="/" exact>
-                    <Login setResponse={setResponse} checkNotAuthenticated={checkNotAuthenticated} />
+                    <Login checkNotAuthenticated={checkNotAuthenticated} />
                   </Route>
                   <Route path="/register">
-                    <Register setResponse={setResponse} checkNotAuthenticated={checkNotAuthenticated} />
+                    <Register checkNotAuthenticated={checkNotAuthenticated} />
                   </Route>
                   <Route path="/channel">
                     <Room checkAuthenticated={checkAuthenticated} />
