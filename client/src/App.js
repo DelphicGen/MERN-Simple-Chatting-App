@@ -3,6 +3,8 @@ import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import axios from 'axios';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
+import { useSelector, useDispatch } from 'react-redux';
+
 
 import Room from './pages/Room/Room';
 import Login from './pages/Login/Login';
@@ -10,6 +12,7 @@ import Register from './pages/Register/Register';
 import NotFoundPage from './pages/NotFoundPage/NotFoundPage';
 import Flash from './components/Flash/Flash';
 import Modal from './components/Modal/Modal';
+import store from './store';
 
 library.add(fas)
 export const modalContext = React.createContext()
@@ -21,19 +24,22 @@ function App() {
     type: ''
   });
 
+  const {alert: {message, type}} = useSelector(state => state);
+  const dispatch = useDispatch();
+
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
       let timer
-      if(response) {
+      if(message) {
           timer = setTimeout(function() {
-              setResponse('')
+              dispatch({type: '', message: ''});
           }, 3000)
       }
       return () => {
           clearTimeout(timer)
       }
-  }, [response])
+  }, [message])
 
   const checkNotAuthenticated = () => {
     return axios(
@@ -57,36 +63,36 @@ function App() {
 
 
   return (
-    <modalContext.Provider value={
-      {
-        showModal,
-        setShowModal
-      }
-    }>
-      <Router>
-        <div className="app-container">
-          <div className="bg-gray-700 w-full min-h-screen overflow-hidden">
-              <Modal setResponse={setResponse} showModal={showModal} setShowModal={setShowModal} />
-              <Flash message={response.message} type={response.type} />
-              <Switch>
+      <modalContext.Provider value={
+        {
+          showModal,
+          setShowModal
+        }
+      }>
+        <Router>
+          <div className="app-container">
+            <div className="bg-gray-700 w-full min-h-screen overflow-hidden">
+                <Modal setResponse={setResponse} showModal={showModal} setShowModal={setShowModal} />
+                <Flash message={message} type={type} />
+                <Switch>
 
-                <Route path="/" exact>
-                  <Login setResponse={setResponse} checkNotAuthenticated={checkNotAuthenticated} />
-                </Route>
-                <Route path="/register">
-                  <Register setResponse={setResponse} checkNotAuthenticated={checkNotAuthenticated} />
-                </Route>
-                <Route path="/channel">
-                  <Room checkAuthenticated={checkAuthenticated} />
-                </Route>
-                <Route path="*" component={NotFoundPage} />
+                  <Route path="/" exact>
+                    <Login setResponse={setResponse} checkNotAuthenticated={checkNotAuthenticated} />
+                  </Route>
+                  <Route path="/register">
+                    <Register setResponse={setResponse} checkNotAuthenticated={checkNotAuthenticated} />
+                  </Route>
+                  <Route path="/channel">
+                    <Room checkAuthenticated={checkAuthenticated} />
+                  </Route>
+                  <Route path="*" component={NotFoundPage} />
 
-              </Switch>
+                </Switch>
+            </div>
+
           </div>
-
-        </div>
-      </Router>
-    </modalContext.Provider>
+        </Router>
+      </modalContext.Provider>
   );
 }
 

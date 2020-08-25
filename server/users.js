@@ -8,9 +8,11 @@ const addUser = ({id, username, channel}) => {
         user_id = user.id
         return user.channel === channel && user.username === username;
     });
+    
     if(existingUser) {
         return ({error: 'Username is taken', id: user_id});
     }
+
     else{
         const user = {id, username, channel};
         users.push(user);

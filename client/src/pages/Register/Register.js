@@ -5,10 +5,14 @@ import Input from '../../components/Input/Input'
 import Header from '../../components/Header/Header'
 import Button from '../../components/Button/Button'
 import Container1 from '../../components/Container1/Container1'
+import { useSelector, useDispatch } from 'react-redux'
+import { success, error } from '../../actions/action'
 
-const Register = ({setResponse, checkNotAuthenticated}) => {
+const Register = ({setResponse, checkNotAuthenticated}, props) => {
     
     const history = useHistory();
+    // const alert = useSelector(state => state);
+    const dispatch = useDispatch();
     const [form, setForm] = useState({
         username: '',
         password: ''
@@ -23,7 +27,7 @@ const Register = ({setResponse, checkNotAuthenticated}) => {
     }
 
     const register = () => {
-        setResponse('')
+        dispatch({type: '', message: ''});
         axios({
             method: 'post',
             url: 'http://localhost:3050/api/auth/register',
@@ -32,24 +36,12 @@ const Register = ({setResponse, checkNotAuthenticated}) => {
             })
             .then(response => {
                 if(response.data === "Username is taken" || response.data === "Password field is required") {
-                    setResponse(prevResponse => ({
-                        ...prevResponse,
-                        message: response.data,
-                        type: 'Error'
-                    }))
+                    dispatch(error(response.data))
                 } else if(response.data === "Ok") {
-                    setResponse(prevResponse => ({
-                        ...prevResponse,
-                        message: "User successfully registered",
-                        type: 'Success'
-                    }))
+                    dispatch(success("User successfully registered"))
                     history.push('/')
                 } else {
-                    setResponse(prevResponse => ({
-                        ...prevResponse,
-                        message: response.data.message,
-                        type: 'Error'
-                    }))
+                    dispatch(error(response.data.message))
                 }
             })
     }
@@ -66,18 +58,6 @@ const Register = ({setResponse, checkNotAuthenticated}) => {
         fetchCheckNotAuthenticatedAPI()
         return () => { didCancel = true }
     }, [])
-
-    // useEffect(() => {
-    //     let timer
-    //     if(response) {
-    //         timer = setTimeout(function() {
-    //             setResponse('')
-    //         }, 6000)
-    //     }
-    //     return () => {
-    //         clearTimeout(timer)
-    //     }
-    // }, [response])
 
     return (
         <Container1>
