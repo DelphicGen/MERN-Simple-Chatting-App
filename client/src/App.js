@@ -1,10 +1,9 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import axios from 'axios';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { useSelector, useDispatch } from 'react-redux';
-
 
 import Room from './pages/Room/Room';
 import Login from './pages/Login/Login';
@@ -12,7 +11,6 @@ import Register from './pages/Register/Register';
 import NotFoundPage from './pages/NotFoundPage/NotFoundPage';
 import Flash from './components/Flash/Flash';
 import Modal from './components/Modal/Modal';
-import store from './store';
 
 library.add(fas)
 export const modalContext = React.createContext()
@@ -20,7 +18,7 @@ export const modalContext = React.createContext()
 function App() {
 
   const {alert: {message, type}} = useSelector(state => state);
-  const dispatch = useDispatch();
+  const dispatch = useCallback(useDispatch(), []);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -34,9 +32,9 @@ function App() {
       return () => {
           clearTimeout(timer)
       }
-  }, [message])
+  }, [message, dispatch])
 
-  const checkNotAuthenticated = () => {
+  const checkNotAuthenticated = useCallback(() => {
     return axios(
       {
         method: 'GET',
@@ -44,9 +42,9 @@ function App() {
         withCredentials: true,
         headers: {'Content-Type': 'application/json' }
       })
-  }
+  }, [])
 
-  const checkAuthenticated = () => {
+  const checkAuthenticated = useCallback(() => {
     return axios(
       {
         method: 'GET',
@@ -54,7 +52,7 @@ function App() {
         withCredentials: true,
         headers: {'Content-Type': 'application/json' }
       })
-  }
+  }, [])
 
 
   return (

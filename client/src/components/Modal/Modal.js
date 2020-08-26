@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useCallback} from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
@@ -33,7 +33,7 @@ const modal = {
 const Modal = ({showModal, setShowModal}) => {
 
     const history = useHistory();
-    const dispatch = useDispatch();
+    const dispatch = useCallback(useDispatch(), []);
     const [channel, setChannel] = useState({
         name: '',
         icon: ''

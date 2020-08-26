@@ -93,7 +93,7 @@ function Room({checkAuthenticated}) {
 
         fetchCheckAuthenticatedAPI();
         return () => { didCancel = true }
-    }, [])
+    }, [checkAuthenticated, history])
 
     return (
         <div className="flex">

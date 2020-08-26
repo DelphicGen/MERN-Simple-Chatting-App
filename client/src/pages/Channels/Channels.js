@@ -2,11 +2,10 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 import {useHistory} from 'react-router-dom';
-import io from 'socket.io-client';
 import styles from './Channels.module.css';
 import Channel from '../../components/Channel/Channel';
 import {modalContext} from '../../App';
-let socket;
+
 
 const Channels = ({username, disconnect}) => {
 
@@ -18,7 +17,6 @@ const Channels = ({username, disconnect}) => {
     const [scrollTop, setScrollTop] = useState(0);
     const channelRef = useRef([]);
     const channelsContainerRef = useRef(null);
-    const ENDPOINT = 'localhost:3050'
     
     const onScroll = (e) => {
         setScrollTop(e.target.scrollTop);
@@ -47,8 +45,6 @@ const Channels = ({username, disconnect}) => {
         let tempRef = channelsContainerRef.current
         tempRef.addEventListener('scroll', onScroll);
 
-        socket = io(ENDPOINT);
-
         return () => tempRef.removeEventListener('scroll', onScroll);
 
     }, [])
@@ -76,7 +72,7 @@ const Channels = ({username, disconnect}) => {
                 })
         }
         return () => { didCancel = true }
-    }, [ModalContext.showModal])
+    }, [ModalContext.showModal, history])
 
     useEffect(() => {
         let didCancel = false;

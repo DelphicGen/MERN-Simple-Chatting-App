@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useCallback} from 'react'
 import axios from 'axios'
 import { useHistory } from 'react-router-dom'
 import Input from '../../components/Input/Input'
@@ -11,7 +11,8 @@ import { success, error } from '../../actions/action';
 const Register = ({checkNotAuthenticated}) => {
     
     const history = useHistory();
-    const dispatch = useDispatch();
+    console.log(history)
+    const dispatch = useCallback(useDispatch(), []);
     const [form, setForm] = useState({
         username: '',
         password: ''
@@ -56,7 +57,7 @@ const Register = ({checkNotAuthenticated}) => {
 
         fetchCheckNotAuthenticatedAPI()
         return () => { didCancel = true }
-    }, [])
+    }, [checkNotAuthenticated, history])
 
     return (
         <Container1>

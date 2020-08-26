@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import axios from 'axios';
 import {useHistory} from 'react-router-dom';
 
@@ -11,7 +11,7 @@ import { error } from '../../actions/action';
 
 const Login = ({checkNotAuthenticated}) => {
     const history = useHistory();
-    const dispatch = useDispatch();
+    const dispatch = useCallback(useDispatch(), []);
     const [form, setForm] = useState({
         username: '',
         password: ''
@@ -57,7 +57,7 @@ const Login = ({checkNotAuthenticated}) => {
 
         fetchCheckNotAuthenticatedAPI()
         return () => { didCancel = true }
-    }, [])
+    }, [checkNotAuthenticated, history])
 
     return (
         <Container1>
